@@ -4,95 +4,157 @@ using UnityEngine;
 
 public class BallGenerator : MonoBehaviour {
 
-    [SerializeField]
-    private GameObject arrowPrefab;
+    [SerializeField] private GameObject orbitPrefab;
+    [SerializeField] private GameObject arrowPrefab;
+    [SerializeField] private GameObject stickPrefab;
+    [SerializeField] private GameObject bowPrefab;
 
-    [SerializeField]
-    private GameObject orbitPrefab;
+    private Vector3 aimPos = new Vector3();
 
-    [SerializeField]
-    private GameObject goAim;
-
-
-    private List<GameObjectEx> list = new List<GameObjectEx>();
+    private Vector3 startMousePos = new Vector3();
+    private Vector3 endMousePos = new Vector3();
 
 
 
-    private const int max_num = 100;
+
+    private ArrowOrbit arrowOrbit = null;
 
 
 
-    private struct GameObjectEx
-    {
-        public GameObject go { get; set; }
-        public Rigidbody2D rb { get; set; }
+    private static readonly int MAX_ARROW_COUNT = 20;
+    private static readonly int MAX_STICK_COUNT = 50;
 
-        public GameObjectEx(GameObject go, Rigidbody2D rb)
-        {
-            this.go = go;
-            this.rb = rb;
-        }
-    }
+    private Queue<GameObject> arrowStuck = new Queue<GameObject>(MAX_ARROW_COUNT);
+    private List<GameObject> arrowList = new List<GameObject>(MAX_ARROW_COUNT);
+    private GameObject targetArrow = null;
 
 
+    //private Queue<GameObject> stickArrowStuck = new Queue<GameObject>(MAX_STICK_COUNT);
+    //private Queue<GameObject> stickArrowQueue = new Queue<GameObject>(MAX_STICK_COUNT);
 
 
     // Use this for initialization
-    private void Start ()
+    private void Start()
     {
-        foreach (int i in Enumerable.Range(0, max_num))
-        {
-            var go = Instantiate(orbitPrefab, transform) as GameObject;
-            var rb = go.GetComponent<Rigidbody2D>();
+        arrowOrbit = new ArrowOrbit(orbitPrefab);
 
-            list.Add(new GameObjectEx(go, rb));
+        foreach (int i in Enumerable.Range(0, MAX_ARROW_COUNT))
+        {
+            var go = Instantiate(arrowPrefab) as GameObject;
+            go.SetActive(false);
+
+            arrowStuck.Enqueue(go);
         }
+
+        //foreach (int i in Enumerable.Range(0, MAX_STICK_COUNT))
+        //{
+        //    var go = Instantiate(stickPrefab, transform) as GameObject;
+        //    go.SetActive(false);
+
+        //    stickArrowStuck.Enqueue(go);
+        //}
     }
 
     // Update is called once per frame
-    private void Update ()
+    private void Update()
     {
-        float rad = getRadian(goAim.transform.position, transform.position);
+        if (Input.GetMouseButtonDown(0))
+        {
+            startMousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            endMousePos = startMousePos;
+
+            aimPos = (endMousePos - startMousePos) + bowPrefab.transform.position;
+        }
+        else if(Input.GetMouseButton(0))
+        {
+            endMousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+            aimPos = (endMousePos - startMousePos) + bowPrefab.transform.position;
+        }
+
+        float rad = GetRadian(endMousePos, startMousePos);
         var force = new Vector2(Mathf.Cos(rad), Mathf.Sin(rad));
-        force *= getDistance(goAim.transform.position, transform.position) * 2;
+        force *= GetDistance(endMousePos, startMousePos) * 5;
 
 
+
+        if (Input.GetMouseButton(0))
+        {
+            arrowOrbit.Update(Physics2D.gravity * Time.fixedDeltaTime, force, aimPos);
+
+            bowPrefab.transform.rotation = Quaternion.Euler(0, 0, rad * Mathf.Rad2Deg + 90.0f);
+
+            if (targetArrow != null)
+            {
+                targetArrow.transform.position = new Vector3(aimPos.x, aimPos.y);
+                targetArrow.transform.rotation = Quaternion.Euler(0, 0, rad * Mathf.Rad2Deg);
+            }
+        }
+
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            arrowOrbit.SetActive(true);
+
+            targetArrow = null;
+            if (arrowStuck.Count > 0) targetArrow = arrowStuck.Dequeue();
+            if (targetArrow != null)
+            {
+                targetArrow.transform.position = new Vector3(aimPos.x, aimPos.y);
+                targetArrow.transform.rotation = Quaternion.Euler(0, 0, rad * Mathf.Rad2Deg);
+                targetArrow.GetComponent<Rigidbody2D>().gravityScale = 0f;
+                targetArrow.SetActive(true);
+
+                arrowList.Add(targetArrow);
+            }
+        }
         if (Input.GetMouseButtonUp(0))
         {
-            var element = Instantiate(arrowPrefab, transform) as GameObject;
-            var rb = element.GetComponent<Rigidbody2D>();
+            arrowOrbit.SetActive(false);
 
-            element.transform.rotation = Quaternion.Euler(0, 0, rad * Mathf.Rad2Deg);
-            rb.AddForce(force, ForceMode2D.Impulse);
+            if (targetArrow != null)
+            {
+                targetArrow.transform.position = new Vector3(aimPos.x, aimPos.y);
+                targetArrow.transform.rotation = Quaternion.Euler(0, 0, rad * Mathf.Rad2Deg);
+
+                targetArrow.GetComponent<Rigidbody2D>().gravityScale = 1.0f;
+                targetArrow.GetComponent<Rigidbody2D>().AddForce(force, ForceMode2D.Impulse);
+
+                targetArrow = null;
+            }
         }
 
 
-        Vector2 gravity = Physics2D.gravity * Time.fixedDeltaTime;
-        Vector2 currentSpeed = force;
-        Vector2 prevPosition = transform.position;
+        //arrowList.RemoveAll(item =>
+        //{
+        //    if (item.GetComponent<ArrowController>().IsEnemyCollision)
+        //    {
+        //        var stick = (stickArrowStuck.Count > 0) ? stickArrowStuck.Dequeue() : stickArrowQueue.Dequeue();
+        //        if (stick != null)
+        //        {
+        //            stick.transform.position = item.transform.position;
+        //            stick.transform.rotation = item.transform.rotation;
+        //            stick.SetActive(true);
+        //            stickArrowQueue.Enqueue(stick);
 
-        foreach (var item in list)
-        {
-            // 現在の速度に重力加速度を足す
-            currentSpeed += gravity;
+        //            item.GetComponent<ArrowController>().Reset();
+        //            arrowStuck.Enqueue(item);
+        //            return true;
+        //        }
+        //    }
 
-            Vector2 nextPosition = prevPosition + (currentSpeed * Time.fixedDeltaTime);
-
-            // 線のリストに加える
-            item.go.transform.position = nextPosition;
-
-            prevPosition = nextPosition;
-        }
+        //    return false;
+        //});
     }
 
-
-    private float getDistance(Vector3 vec, Vector3 vec2)
+    private float GetDistance(Vector3 vec1, Vector3 vec2)
     {
-        return Mathf.Sqrt((vec2.x - vec.x) * (vec2.x - vec.x) + (vec2.y - vec.y) * (vec2.y - vec.y));
+        var v = vec2 - vec1;
+        return Mathf.Sqrt(v.x * v.x + v.y * v.y);
     }
 
-    private float getRadian(Vector3 vec, Vector3 vec2)
+    private float GetRadian(Vector3 vec1, Vector3 vec2)
     {
-        return Mathf.Atan2(vec2.y - vec.y, vec2.x - vec.x);
+        return Mathf.Atan2(vec2.y - vec1.y, vec2.x - vec1.x);
     }
 }
