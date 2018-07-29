@@ -3,7 +3,9 @@ guid: 94b8820b2293e8f40af8bb6b7dcfaa66
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - orbitPrefab: {fileID: 1290361708818510, guid: 3b7629033261b7d4d896fa8373b93006,
+      type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

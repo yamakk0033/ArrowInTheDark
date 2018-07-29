@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class ArrowOrbit
 {
-    // 軌道を表示
     private static readonly int MAX_ORBIT_COUNT = 100;
+
+    // 
     private List<GameObject> orbitList = new List<GameObject>(MAX_ORBIT_COUNT);
 
 
