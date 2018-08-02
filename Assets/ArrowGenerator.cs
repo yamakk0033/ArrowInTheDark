@@ -1,20 +1,16 @@
 ﻿using UnityEngine;
 
-public class BallGenerator : MonoBehaviour
+public class ArrowGenerator : MonoBehaviour
 {
-
     [SerializeField] private GameObject orbitPrefab;
     [SerializeField] private GameObject arrowPrefab;
     [SerializeField] private GameObject stickPrefab;
     [SerializeField] private GameObject bowPrefab;
 
-    private Vector3 aimPos = Vector3.zero;
 
     private Vector3 startMousePos = Vector3.zero;
-    private Vector3 endMousePos = Vector3.zero;
 
 
-    private ArrowBehavior arrowBehavior = null;
     private ArrowOrbit arrowOrbit = null;
     private GameObject targetArrow = null;
 
@@ -22,8 +18,9 @@ public class BallGenerator : MonoBehaviour
     // Use this for initialization
     private void Start()
     {
+        ArrowController.Init(arrowPrefab, stickPrefab);
+
         arrowOrbit = new ArrowOrbit(orbitPrefab);
-        arrowBehavior = new ArrowBehavior(arrowPrefab, stickPrefab);
 
         targetArrow = Instantiate(stickPrefab) as GameObject;
         targetArrow.SetActive(false);
@@ -32,17 +29,17 @@ public class BallGenerator : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
+        var aimPos = Vector3.zero;
         float rad = 0f;
         var force = Vector2.zero;
 
         if (Input.GetMouseButtonDown(0))
         {
             startMousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            endMousePos = startMousePos;
         }
         if (Input.GetMouseButton(0) || Input.GetMouseButtonUp(0))
         {
-            endMousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            var endMousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
             aimPos = (endMousePos - startMousePos) + bowPrefab.transform.position;
 
@@ -71,11 +68,9 @@ public class BallGenerator : MonoBehaviour
         {
             arrowOrbit.SetActive(false);
 
-            arrowBehavior.AddForce(aimPos.x, aimPos.y, rad, force);
+            ArrowController.AddForce(aimPos.x, aimPos.y, rad, force);
             targetArrow.SetActive(false);
         }
-
-        arrowBehavior.Update();
     }
 
 
