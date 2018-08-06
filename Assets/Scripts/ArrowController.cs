@@ -4,41 +4,40 @@ using UnityEngine;
 
 public class ArrowController : MonoBehaviour
 {
-    private static readonly int MAX_ARROW_COUNT = 20;
+    private static readonly int MAX_COUNT = 20;
     private static readonly int MAX_ATTACHED_COUNT = 5;
 
-    private static Queue<GameObject> arrowQueue = new Queue<GameObject>(MAX_ARROW_COUNT);
+    private static Queue<GameObject> queue = new Queue<GameObject>(MAX_COUNT);
     private static Queue<GameObject> attachedQueue = new Queue<GameObject>(MAX_ATTACHED_COUNT);
 
 
     private Rigidbody2D rigid2d = null;
 
 
-
     public static void Init(GameObject arrowPrefab, GameObject stickPrefab)
     {
-        arrowQueue.Clear();
-        foreach (int i in Enumerable.Range(0, MAX_ARROW_COUNT))
+        queue.Clear();
+        foreach (int i in Enumerable.Range(0, MAX_COUNT))
         {
-            var go = Instantiate<GameObject>(arrowPrefab);
+            var go = Instantiate(arrowPrefab);
             go.SetActive(false);
 
-            arrowQueue.Enqueue(go);
+            queue.Enqueue(go);
         }
 
         attachedQueue.Clear();
         foreach (int i in Enumerable.Range(0, MAX_ATTACHED_COUNT))
         {
-            var go = Instantiate<GameObject>(stickPrefab);
+            var go = Instantiate(stickPrefab);
             go.SetActive(false);
 
             attachedQueue.Enqueue(go);
         }
     }
 
-    public static void AddForce(float x, float y, float rad, Vector3 force)
+    public static void Appear(float x, float y, float rad, Vector2 force)
     {
-        var item = arrowQueue.Dequeue();
+        var item = queue.Dequeue();
         item.transform.position = new Vector3(x, y);
         item.transform.rotation = Quaternion.Euler(0, 0, rad * Mathf.Rad2Deg);
 
@@ -50,31 +49,39 @@ public class ArrowController : MonoBehaviour
 
 
     // Use this for initialization
-    void Start()
+    private void Start()
     {
         rigid2d = GetComponent<Rigidbody2D>();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void FixedUpdate()
     {
         float rad = Mathf.Atan2(rigid2d.velocity.y, rigid2d.velocity.x);
         transform.rotation = Quaternion.Euler(0, 0, rad * Mathf.Rad2Deg);
     }
 
-    void OnCollisionEnter2D(Collision2D collision)
+    private void OnCollisionEnter2D(Collision2D collision)
     {
+        if (!gameObject.activeSelf) return;
+
+        gameObject.SetActive(false);
+        queue.Enqueue(gameObject);
+
+
+        if (!collision.gameObject.activeSelf) return;
+
         var item = attachedQueue.Dequeue();
         if (item != null)
         {
-            item.transform.position = gameObject.transform.position;
-            item.transform.rotation = gameObject.transform.rotation;
-            item.transform.parent = collision.gameObject.transform;
-            if(!item.activeSelf) item.SetActive(true);
-            attachedQueue.Enqueue(item);
+            var tran = item.transform;
 
-            if (gameObject.activeSelf) gameObject.SetActive(false);
-            arrowQueue.Enqueue(gameObject);
+            tran.parent = null;
+            tran.localPosition = gameObject.transform.localPosition;
+            tran.localRotation = gameObject.transform.localRotation;
+            tran.parent = collision.gameObject.transform;
+
+            if (!item.activeSelf) item.SetActive(true);
+            attachedQueue.Enqueue(item);
         }
     }
 }

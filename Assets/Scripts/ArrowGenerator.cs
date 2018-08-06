@@ -5,7 +5,7 @@ public class ArrowGenerator : MonoBehaviour
     [SerializeField] private GameObject orbitPrefab;
     [SerializeField] private GameObject arrowPrefab;
     [SerializeField] private GameObject stickPrefab;
-    [SerializeField] private GameObject bowPrefab;
+    [SerializeField] private GameObject bowObject;
 
 
     private Vector3 startMousePos = Vector3.zero;
@@ -22,7 +22,7 @@ public class ArrowGenerator : MonoBehaviour
 
         arrowOrbit = new ArrowOrbit(orbitPrefab);
 
-        targetArrow = Instantiate(stickPrefab) as GameObject;
+        targetArrow = Instantiate(stickPrefab);
         targetArrow.SetActive(false);
     }
 
@@ -41,7 +41,7 @@ public class ArrowGenerator : MonoBehaviour
         {
             var endMousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-            aimPos = (endMousePos - startMousePos) + bowPrefab.transform.position;
+            aimPos = (endMousePos - startMousePos) + bowObject.transform.position;
 
             rad = GetRadian(endMousePos, startMousePos);
             force = new Vector2(Mathf.Cos(rad), Mathf.Sin(rad)) * GetDistance(endMousePos, startMousePos) * 5;
@@ -53,7 +53,7 @@ public class ArrowGenerator : MonoBehaviour
         {
             arrowOrbit.Update(Physics2D.gravity * Time.fixedDeltaTime, force, aimPos);
 
-            bowPrefab.transform.rotation = Quaternion.Euler(0, 0, rad * Mathf.Rad2Deg + 90.0f);
+            bowObject.transform.rotation = Quaternion.Euler(0, 0, rad * Mathf.Rad2Deg + 90.0f);
 
             targetArrow.transform.position = new Vector3(aimPos.x, aimPos.y);
             targetArrow.transform.rotation = Quaternion.Euler(0, 0, rad * Mathf.Rad2Deg);
@@ -68,7 +68,7 @@ public class ArrowGenerator : MonoBehaviour
         {
             arrowOrbit.SetActive(false);
 
-            ArrowController.AddForce(aimPos.x, aimPos.y, rad, force);
+            ArrowController.Appear(aimPos.x, aimPos.y, rad, force);
             targetArrow.SetActive(false);
         }
     }

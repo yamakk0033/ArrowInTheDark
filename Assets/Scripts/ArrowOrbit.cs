@@ -6,32 +6,34 @@ public class ArrowOrbit
 {
     private static readonly int MAX_ORBIT_COUNT = 100;
 
-    // 
-    private List<GameObject> orbitList = new List<GameObject>(MAX_ORBIT_COUNT);
+    private List<GameObject> list = new List<GameObject>(MAX_ORBIT_COUNT);
 
 
-    // Use this for initialization
+    /// <summary>
+    /// コンストラクタ
+    /// </summary>
+    /// <param name="orbitPrefab"></param>
     public ArrowOrbit(GameObject orbitPrefab)
     {
         foreach (int i in Enumerable.Range(0, MAX_ORBIT_COUNT))
         {
-            var go = Object.Instantiate(orbitPrefab) as GameObject;
+            var go = Object.Instantiate(orbitPrefab);
             go.SetActive(false);
 
-            orbitList.Add(go);
+            list.Add(go);
         }
     }
 
     public void SetActive(bool act)
     {
-        orbitList.ForEach(element => element.SetActive(act));
+        list.ForEach(element => element.SetActive(act));
     }
 
     public void Update(Vector2 gravity, Vector2 speed, Vector2 pos)
     {
         Vector2 prevPos = pos;
 
-        foreach (var item in orbitList)
+        foreach (var item in list)
         {
             // 現在の速度に重力加速度を足す
             speed += gravity;
