@@ -2,10 +2,11 @@
 using System.Linq;
 using UnityEngine;
 
+[DisallowMultipleComponent]
 public class ArrowController : MonoBehaviour
 {
     private static readonly int MAX_COUNT = 20;
-    private static readonly int MAX_ATTACHED_COUNT = 5;
+    private static readonly int MAX_ATTACHED_COUNT = 50;
 
     private static Queue<GameObject> queue = new Queue<GameObject>(MAX_COUNT);
     private static Queue<GameObject> attachedQueue = new Queue<GameObject>(MAX_ATTACHED_COUNT);

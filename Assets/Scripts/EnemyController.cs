@@ -2,6 +2,7 @@
 using System.Linq;
 using UnityEngine;
 
+[DisallowMultipleComponent]
 public class EnemyController : MonoBehaviour
 {
     private static readonly int MAX_COUNT = 20;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+[DisallowMultipleComponent]
 public class CameraController : MonoBehaviour
 {
     //[SerializeField] Transform target1 = null;

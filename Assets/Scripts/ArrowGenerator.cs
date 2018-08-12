@@ -1,14 +1,12 @@
 ﻿using UnityEngine;
 
+[DisallowMultipleComponent]
 public class ArrowGenerator : MonoBehaviour
 {
-    [SerializeField] private GameObject orbitPrefab;
-    [SerializeField] private GameObject arrowPrefab;
-    [SerializeField] private GameObject stickPrefab;
-    [SerializeField] private GameObject bowObject;
-
-
-    private Vector3 startMousePos = Vector3.zero;
+    [SerializeField] private GameObject OrbitPrefab = null;
+    [SerializeField] private GameObject ArrowPrefab = null;
+    [SerializeField] private GameObject StickPrefab = null;
+    [SerializeField] private GameObject BowObject = null;
 
 
     private ArrowOrbit arrowOrbit = null;
@@ -18,11 +16,11 @@ public class ArrowGenerator : MonoBehaviour
     // Use this for initialization
     private void Start()
     {
-        ArrowController.Init(arrowPrefab, stickPrefab);
+        ArrowController.Init(ArrowPrefab, StickPrefab);
 
-        arrowOrbit = new ArrowOrbit(orbitPrefab);
+        arrowOrbit = new ArrowOrbit(OrbitPrefab);
 
-        targetArrow = Instantiate(stickPrefab);
+        targetArrow = Instantiate(StickPrefab);
         targetArrow.SetActive(false);
     }
 
@@ -33,56 +31,41 @@ public class ArrowGenerator : MonoBehaviour
         float rad = 0f;
         var force = Vector2.zero;
 
-        if (Input.GetMouseButtonDown(0))
+        if (TouchInput.GetState() == TouchInput.State.Moved ||
+            TouchInput.GetState() == TouchInput.State.Ended)
         {
-            startMousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        }
-        if (Input.GetMouseButton(0) || Input.GetMouseButtonUp(0))
-        {
-            var endMousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            var beginPos = TouchInput.GetBeganWorldPosision(Camera.main);
+            var endPos = TouchInput.GetWorldPosision(Camera.main);
 
-            aimPos = (endMousePos - startMousePos) + bowObject.transform.position;
+            aimPos = (endPos - beginPos) + BowObject.transform.position;
 
-            rad = GetRadian(endMousePos, startMousePos);
-            force = new Vector2(Mathf.Cos(rad), Mathf.Sin(rad)) * GetDistance(endMousePos, startMousePos) * 5;
+            rad = Calculation.Radian(endPos, beginPos);
+            force = new Vector2(Mathf.Cos(rad), Mathf.Sin(rad)) * Calculation.Distance(endPos, beginPos) * 5;
         }
 
 
-
-        if (Input.GetMouseButton(0))
+        switch(TouchInput.GetState())
         {
-            arrowOrbit.Update(Physics2D.gravity * Time.fixedDeltaTime, force, aimPos);
+            case TouchInput.State.Moved:
+                arrowOrbit.Update(Physics2D.gravity * Time.fixedDeltaTime, force, aimPos);
 
-            bowObject.transform.rotation = Quaternion.Euler(0, 0, rad * Mathf.Rad2Deg + 90.0f);
+                BowObject.transform.rotation = Quaternion.Euler(0, 0, rad * Mathf.Rad2Deg + 90.0f);
 
-            targetArrow.transform.position = new Vector3(aimPos.x, aimPos.y);
-            targetArrow.transform.rotation = Quaternion.Euler(0, 0, rad * Mathf.Rad2Deg);
+                targetArrow.transform.position = new Vector3(aimPos.x, aimPos.y);
+                targetArrow.transform.rotation = Quaternion.Euler(0, 0, rad * Mathf.Rad2Deg);
+                break;
+
+            case TouchInput.State.Began:
+                arrowOrbit.SetActive(true);
+                targetArrow.SetActive(true);
+                break;
+
+            case TouchInput.State.Ended:
+                ArrowController.Appear(aimPos.x, aimPos.y, rad, force);
+
+                arrowOrbit.SetActive(false);
+                targetArrow.SetActive(false);
+                break;
         }
-
-        if (Input.GetMouseButtonDown(0))
-        {
-            arrowOrbit.SetActive(true);
-            targetArrow.SetActive(true);
-        }
-        else if (Input.GetMouseButtonUp(0))
-        {
-            arrowOrbit.SetActive(false);
-
-            ArrowController.Appear(aimPos.x, aimPos.y, rad, force);
-            targetArrow.SetActive(false);
-        }
-    }
-
-
-
-    private float GetDistance(Vector3 vec1, Vector3 vec2)
-    {
-        var v = vec2 - vec1;
-        return Mathf.Sqrt(v.x * v.x + v.y * v.y);
-    }
-
-    private float GetRadian(Vector3 vec1, Vector3 vec2)
-    {
-        return Mathf.Atan2(vec2.y - vec1.y, vec2.x - vec1.x);
     }
 }

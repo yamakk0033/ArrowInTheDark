@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 
+[DisallowMultipleComponent]
 public class EnemyGenerator : MonoBehaviour
 {
-    [SerializeField] private GameObject enemyPrefab;
+    [SerializeField] private GameObject enemyPrefab = null;
 
     private float bufferTime = 5.0f;
 

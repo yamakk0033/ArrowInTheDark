@@ -2,38 +2,43 @@
 using System.Linq;
 using UnityEngine;
 
+[DisallowMultipleComponent]
 public class ArrowOrbit
 {
-    private static readonly int MAX_ORBIT_COUNT = 100;
+    private static readonly int MAX_COUNT = 100;
 
-    private List<GameObject> list = new List<GameObject>(MAX_ORBIT_COUNT);
+    private GameObject parent = new GameObject();
+    private List<GameObject> children = new List<GameObject>(MAX_COUNT);
 
 
-    /// <summary>
-    /// コンストラクタ
-    /// </summary>
-    /// <param name="orbitPrefab"></param>
     public ArrowOrbit(GameObject orbitPrefab)
     {
-        foreach (int i in Enumerable.Range(0, MAX_ORBIT_COUNT))
+        parent.transform.position = Vector3.zero;
+        parent.transform.rotation = Quaternion.identity;
+        parent.transform.localScale = Vector3.one;
+        parent.SetActive(false);
+
+
+        children.Clear();
+        foreach (int i in Enumerable.Range(0, MAX_COUNT))
         {
             var go = Object.Instantiate(orbitPrefab);
-            go.SetActive(false);
+            go.transform.parent = parent.transform;
 
-            list.Add(go);
+            children.Add(go);
         }
     }
 
-    public void SetActive(bool act)
+    public void SetActive(bool isActive)
     {
-        list.ForEach(element => element.SetActive(act));
+        parent.SetActive(isActive);
     }
 
     public void Update(Vector2 gravity, Vector2 speed, Vector2 pos)
     {
         Vector2 prevPos = pos;
 
-        foreach (var item in list)
+        foreach (var item in children)
         {
             // 現在の速度に重力加速度を足す
             speed += gravity;
