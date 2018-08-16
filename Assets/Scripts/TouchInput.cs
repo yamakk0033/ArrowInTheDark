@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 [DisallowMultipleComponent]
 public class TouchInput : MonoBehaviour
@@ -28,16 +29,27 @@ public class TouchInput : MonoBehaviour
         Ended,
     }
 
+    public enum Layer
+    {
+        None,
+        UI,
+    }
+
 
     private static Vector3 began = Vector3.zero;
 
     private static State state = State.None;
-
+    private static Layer layer = Layer.None;
 
 
     public static State GetState()
     {
         return state;
+    }
+
+    public static Layer GetLayer()
+    {
+        return layer;
     }
 
     public static Vector3 GetBeganPosision()
@@ -65,17 +77,34 @@ public class TouchInput : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
-        UpdateState();
-
-        if (state == State.Began) began = Input.mousePosition;
-    }
-
-    private static void UpdateState()
-    {
         state = State.None;
-
         if      (Input.GetMouseButtonDown(0)) state = State.Began;
         else if (Input.GetMouseButton(0))     state = State.Moved;
         else if (Input.GetMouseButtonUp(0))   state = State.Ended;
+
+
+        if (state == State.Began)
+        {
+            began = Input.mousePosition;
+
+
+            var pointer = new PointerEventData(EventSystem.current);
+            var result = new List<RaycastResult>();
+
+            pointer.position = Input.mousePosition;
+
+
+            EventSystem.current.RaycastAll(pointer, result);
+            if(result.Count > 0)
+            {
+                layer = Layer.UI;
+                Debug.Log(layer);
+            }
+        }
+        else if(state == State.None)
+        {
+            began = Vector3.zero;
+            layer = Layer.None;
+        }
     }
 }

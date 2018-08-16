@@ -27,6 +27,8 @@ public class ArrowGenerator : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
+        if (TouchInput.GetLayer() == TouchInput.Layer.UI) return;
+
         var aimPos = Vector3.zero;
         float rad = 0f;
         var force = Vector2.zero;
@@ -44,28 +46,26 @@ public class ArrowGenerator : MonoBehaviour
         }
 
 
-        switch(TouchInput.GetState())
+
+        if(TouchInput.GetState() == TouchInput.State.Moved)
         {
-            case TouchInput.State.Moved:
-                arrowOrbit.Update(Physics2D.gravity * Time.fixedDeltaTime, force, aimPos);
+            arrowOrbit.Update(Physics2D.gravity * Time.fixedDeltaTime, force, aimPos);
 
-                BowObject.transform.rotation = Quaternion.Euler(0, 0, rad * Mathf.Rad2Deg + 90.0f);
+            BowObject.transform.rotation = Quaternion.Euler(0, 0, rad * Mathf.Rad2Deg + 90.0f);
 
-                targetArrow.transform.position = new Vector3(aimPos.x, aimPos.y);
-                targetArrow.transform.rotation = Quaternion.Euler(0, 0, rad * Mathf.Rad2Deg);
-                break;
+            targetArrow.transform.position = new Vector3(aimPos.x, aimPos.y);
+            targetArrow.transform.rotation = Quaternion.Euler(0, 0, rad * Mathf.Rad2Deg);
+        }
 
-            case TouchInput.State.Began:
-                arrowOrbit.SetActive(true);
-                targetArrow.SetActive(true);
-                break;
-
-            case TouchInput.State.Ended:
-                ArrowController.Appear(aimPos.x, aimPos.y, rad, force);
-
-                arrowOrbit.SetActive(false);
-                targetArrow.SetActive(false);
-                break;
+        if(TouchInput.GetState() == TouchInput.State.Began)
+        {
+            arrowOrbit.SetActive(true);
+            targetArrow.SetActive(true);
+        }
+        else if(TouchInput.GetState() == TouchInput.State.Ended)
+        {
+            arrowOrbit.SetActive(false);
+            targetArrow.SetActive(false);
         }
     }
 }
