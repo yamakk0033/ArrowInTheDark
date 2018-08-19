@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -29,17 +28,11 @@ public class TouchInput : MonoBehaviour
         Ended,
     }
 
-    public enum Layer
-    {
-        None,
-        UI,
-    }
-
 
     private static Vector3 began = Vector3.zero;
 
     private static State state = State.None;
-    private static Layer layer = Layer.None;
+    private static int layerNo = LayerNo.DEFAULT;
 
 
     public static State GetState()
@@ -47,9 +40,9 @@ public class TouchInput : MonoBehaviour
         return state;
     }
 
-    public static Layer GetLayer()
+    public static int GetLayerNo()
     {
-        return layer;
+        return layerNo;
     }
 
     public static Vector3 GetBeganPosision()
@@ -97,14 +90,13 @@ public class TouchInput : MonoBehaviour
             EventSystem.current.RaycastAll(pointer, result);
             if(result.Count > 0)
             {
-                layer = Layer.UI;
-                Debug.Log(layer);
+                layerNo = LayerNo.UI;
             }
         }
         else if(state == State.None)
         {
             began = Vector3.zero;
-            layer = Layer.None;
+            layerNo = LayerNo.DEFAULT;
         }
     }
 }

@@ -63,7 +63,7 @@ public class EnemyController : MonoBehaviour
             var items = Enumerable.Range(0, gameObject.transform.childCount).Select(i => gameObject.transform.GetChild(i)).ToArray();
             foreach (var item in items)
             {
-                if (item.gameObject.tag != TagConst.Arrow) continue;
+                if (item.gameObject.tag != TagName.ARROW) continue;
                 item.gameObject.SetActive(false);
                 item.parent = null;
             }

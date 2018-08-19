@@ -27,7 +27,7 @@ public class ArrowGenerator : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
-        if (TouchInput.GetLayer() == TouchInput.Layer.UI) return;
+        if (TouchInput.GetLayerNo() == LayerNo.UI) return;
 
         var aimPos = Vector3.zero;
         float rad = 0f;
@@ -64,6 +64,8 @@ public class ArrowGenerator : MonoBehaviour
         }
         else if(TouchInput.GetState() == TouchInput.State.Ended)
         {
+            ArrowController.Appear(aimPos.x, aimPos.y, rad, force);
+
             arrowOrbit.SetActive(false);
             targetArrow.SetActive(false);
         }
