@@ -2,19 +2,15 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!114 &11400000
 MonoBehaviour:
-  m_ObjectHideFlags: 8
+  m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1bb0f88ad3f8cb2478915658d0a4c218, type: 3}
-  m_Name: SceneData
+  m_Script: {fileID: 11500000, guid: 2ea46636735b3854ca95a2940a548d5f, type: 3}
+  m_Name: EnemyStatus
   m_EditorClassIdentifier: 
-  list:
-  - No: 0
-    Name: 
-  - No: 1
-    Name: TitleScene
-  - No: 2
-    Name: GameScene
+  _name: marui_teki
+  _hp: 2
+  _speed: 1
