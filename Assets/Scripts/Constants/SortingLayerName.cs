@@ -1,7 +1,10 @@
-﻿/// <summary>
-/// ソーティングレイヤー名を定数で管理するクラス
-/// </summary>
-public static class SortingLayerName
+﻿namespace Assets.Constants
 {
-    public const string DEFAULT = "Default";
+    /// <summary>
+    /// ソーティングレイヤー名を定数で管理するクラス
+    /// </summary>
+    public static class SortingLayerName
+    {
+        public const string DEFAULT = "Default";
+    }
 }

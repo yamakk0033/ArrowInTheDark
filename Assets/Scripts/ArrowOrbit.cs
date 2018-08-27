@@ -2,56 +2,59 @@
 using System.Linq;
 using UnityEngine;
 
-[DisallowMultipleComponent]
-public class ArrowOrbit
+namespace Assets
 {
-    private static readonly int MAX_COUNT = 100;
-
-    private GameObject parent = new GameObject();
-    private List<GameObject> children = new List<GameObject>(MAX_COUNT);
-
-
-    public ArrowOrbit(GameObject orbitPrefab)
+    [DisallowMultipleComponent]
+    public class ArrowOrbit
     {
-        parent.transform.position = Vector3.zero;
-        parent.transform.rotation = Quaternion.identity;
-        parent.transform.localScale = Vector3.one;
-        parent.SetActive(false);
+        private static readonly int MAX_COUNT = 100;
+
+        private GameObject parent = new GameObject();
+        private List<GameObject> children = new List<GameObject>(MAX_COUNT);
 
 
-        children.Clear();
-        foreach (int i in Enumerable.Range(0, MAX_COUNT))
+        public ArrowOrbit(GameObject orbitPrefab)
         {
-            var go = Object.Instantiate(orbitPrefab);
-            go.transform.parent = parent.transform;
+            parent.transform.position = Vector3.zero;
+            parent.transform.rotation = Quaternion.identity;
+            parent.transform.localScale = Vector3.one;
+            parent.SetActive(false);
 
-            children.Add(go);
+
+            children.Clear();
+            foreach (int i in Enumerable.Range(0, MAX_COUNT))
+            {
+                var go = Object.Instantiate(orbitPrefab);
+                go.transform.parent = parent.transform;
+
+                children.Add(go);
+            }
         }
-    }
 
-    public void SetActive(bool isActive)
-    {
-        parent.SetActive(isActive);
-    }
-
-    public void Update(Vector2 gravity, Vector2 speed, Vector2 pos)
-    {
-        Vector2 prevPos = pos;
-
-        foreach (var item in children)
+        public void SetActive(bool isActive)
         {
-            // 現在の速度に重力加速度を足す
-            speed += gravity;
+            parent.SetActive(isActive);
+        }
 
-            Vector2 nextPos = prevPos + (speed * Time.fixedDeltaTime);
+        public void Update(Vector2 gravity, Vector2 speed, Vector2 pos)
+        {
+            Vector2 prevPos = pos;
 
-            speed += gravity;
-            nextPos += (speed * Time.fixedDeltaTime);
+            foreach (var item in children)
+            {
+                // 現在の速度に重力加速度を足す
+                speed += gravity;
 
-            // 線のリストに加える
-            item.transform.position = nextPos;
+                Vector2 nextPos = prevPos + (speed * Time.fixedDeltaTime);
 
-            prevPos = nextPos;
+                speed += gravity;
+                nextPos += (speed * Time.fixedDeltaTime);
+
+                // 線のリストに加える
+                item.transform.position = nextPos;
+
+                prevPos = nextPos;
+            }
         }
     }
 }

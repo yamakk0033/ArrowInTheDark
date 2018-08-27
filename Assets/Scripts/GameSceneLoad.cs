@@ -1,16 +1,19 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 
-[DisallowMultipleComponent]
-public class GameSceneLoad : MonoBehaviour
+namespace Assets
 {
-    public void SceneReplace()
+    [DisallowMultipleComponent]
+    public class GameSceneLoad : MonoBehaviour
     {
-        SceneManager.LoadScene("GameScene");
-    }
+        public void SceneReplace()
+        {
+            SceneManager.LoadScene("GameScene");
+        }
 
-    public void SceneEnd()
-    {
-        Application.Quit();
+        public void SceneEnd()
+        {
+            Application.Quit();
+        }
     }
 }

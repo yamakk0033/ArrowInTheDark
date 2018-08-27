@@ -3,14 +3,12 @@
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2ea46636735b3854ca95a2940a548d5f, type: 3}
-  m_Name: EnemyStatus
+  m_Script: {fileID: 11500000, guid: f27a5ab2da00f9a49a0337bd9b2804c9, type: 3}
+  m_Name: 7368bc1539f21c6408636aac9cefbd28
   m_EditorClassIdentifier: 
-  _name: marui_teki
-  _hp: 2
-  _speed: 1
+  position: {x: 0, y: 0}
