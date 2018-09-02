@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Assets
+namespace Assets.Manager
 {
     [DisallowMultipleComponent]
-    public class GameSceneLoad : MonoBehaviour
+    public class TitleManager : MonoBehaviour
     {
         public void SceneReplace()
         {

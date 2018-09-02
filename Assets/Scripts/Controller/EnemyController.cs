@@ -10,6 +10,8 @@ namespace Assets.Controller
     public class EnemyController : MonoBehaviour
     {
         private static Queue<GameObject> queue = new Queue<GameObject>();
+        private static int EnemyTotalCount = 0;
+        private static int EraseCounter = 0;
 
 
         private SpriteRenderer spriteRend = null;
@@ -32,6 +34,9 @@ namespace Assets.Controller
                 go.SetActive(false);
                 queue.Enqueue(go);
             }
+
+            EnemyTotalCount = list.Count;
+            EraseCounter = 0;
         }
 
         public static void Appear(float x, float y)
@@ -60,26 +65,6 @@ namespace Assets.Controller
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
-            //hitPoint--;
-            //spriteRend.color = (hitPoint == 1) ? Color.red : Color.white;
-
-            //if (hitPoint <= 0)
-            //{
-            //    gameObject.SetActive(false);
-
-            //    var items = Enumerable.Range(0, gameObject.transform.childCount).Select(i => gameObject.transform.GetChild(i)).ToArray();
-            //    foreach (var item in items)
-            //    {
-            //        if (item.gameObject.tag != TagName.ARROW) continue;
-            //        item.gameObject.SetActive(false);
-            //        item.parent = null;
-            //    }
-
-            //    hitPoint = 2;
-            //    queue.Enqueue(gameObject);
-            //}
-
-
             status.Hp --;
             spriteRend.color = (status.Hp == 1) ? Color.red : Color.white;
 
@@ -94,6 +79,8 @@ namespace Assets.Controller
                     item.gameObject.SetActive(false);
                     item.parent = null;
                 }
+
+                EraseCounter ++;
 
                 //status.Hp = 2;
                 //queue.Enqueue(gameObject);
