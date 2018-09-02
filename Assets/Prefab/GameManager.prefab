@@ -1,0 +1,77 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications: []
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 1659693654701242}
+  m_IsPrefabAsset: 1
+--- !u!1 &1659693654701242
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4666212601321358}
+  - component: {fileID: 114284069895734868}
+  - component: {fileID: 114074336286959710}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4666212601321358
+Transform:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1659693654701242}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114074336286959710
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1659693654701242}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d97ee3e3236fb584098b81681d8584f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &114284069895734868
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1659693654701242}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bcc1d93548afcae489a209ba9cf18a23, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  arrowGeneratorPrefab: {fileID: 1502332461237794, guid: 1b420b6ca780b424b87dfaa48de309e9,
+    type: 2}
+  enemyGeneratorPrefab: {fileID: 1967539466772996, guid: 7d46571d2ccd3a6498ffb9342b70c173,
+    type: 2}
+  startCanvasPrefab: {fileID: 223156151568680876, guid: a90d460b0d27cac409ee8ec7f54c4913,
+    type: 2}
+  gameCanvasPrefab: {fileID: 223703857016762326, guid: 71876ea4b07ce20448da9fdb4cd40fee,
+    type: 2}
+  pauseCanvasPrefab: {fileID: 223986311109848202, guid: 417e620a62557e742beb39308df1bedc,
+    type: 2}
+  clearCanvasPrefab: {fileID: 223070343915475306, guid: bf3e9baf20b020c429d6752da1045c73,
+    type: 2}

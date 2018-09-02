@@ -17,7 +17,7 @@ namespace Assets.Controller
 
         private void Start()
         {
-            list = objects.SelectMany(o => o.GetComponents<MonoBehaviour>()).ToList();
+            //list = objects.SelectMany(o => o.GetComponents<MonoBehaviour>()).ToList();
         }
 
 

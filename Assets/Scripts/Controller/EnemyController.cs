@@ -10,7 +10,7 @@ namespace Assets.Controller
     public class EnemyController : MonoBehaviour
     {
         private static Queue<GameObject> queue = new Queue<GameObject>();
-        private static int EnemyTotalCount = 0;
+        //private static int EnemyTotalCount = 0;
         private static int EraseCounter = 0;
 
 
@@ -35,7 +35,7 @@ namespace Assets.Controller
                 queue.Enqueue(go);
             }
 
-            EnemyTotalCount = list.Count;
+            //EnemyTotalCount = list.Count;
             EraseCounter = 0;
         }
 

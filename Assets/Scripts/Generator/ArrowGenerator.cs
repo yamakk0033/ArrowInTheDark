@@ -10,11 +10,12 @@ namespace Assets.Generator
         [SerializeField] private GameObject OrbitPrefab = null;
         [SerializeField] private GameObject ArrowPrefab = null;
         [SerializeField] private GameObject StickPrefab = null;
-        [SerializeField] private GameObject BowObject = null;
+        [SerializeField] private GameObject BowPrefab = null;
 
 
         private ArrowOrbit arrowOrbit = null;
-        private GameObject targetArrow = null;
+        private GameObject arrowObject = null;
+        private GameObject bowObject = null;
 
 
         // Use this for initialization
@@ -24,8 +25,10 @@ namespace Assets.Generator
 
             arrowOrbit = new ArrowOrbit(OrbitPrefab);
 
-            targetArrow = Instantiate(StickPrefab);
-            targetArrow.SetActive(false);
+            arrowObject = Instantiate(StickPrefab);
+            arrowObject.SetActive(false);
+
+            bowObject = Instantiate(BowPrefab);
         }
 
         // Update is called once per frame
@@ -43,7 +46,7 @@ namespace Assets.Generator
                 var beginPos = TouchInput.GetBeganWorldPosision(Camera.main);
                 var endPos = TouchInput.GetWorldPosision(Camera.main);
 
-                aimPos = (endPos - beginPos) + BowObject.transform.position;
+                aimPos = (endPos - beginPos) + bowObject.transform.position;
 
                 rad = Calculation.Radian(endPos, beginPos);
                 force = new Vector2(Mathf.Cos(rad), Mathf.Sin(rad)) * Calculation.Distance(endPos, beginPos) * 5;
@@ -55,23 +58,23 @@ namespace Assets.Generator
             {
                 arrowOrbit.Update(Physics2D.gravity * Time.fixedDeltaTime, force, aimPos);
 
-                BowObject.transform.rotation = Quaternion.Euler(0, 0, rad * Mathf.Rad2Deg + 90.0f);
+                bowObject.transform.rotation = Quaternion.Euler(0, 0, rad * Mathf.Rad2Deg + 90.0f);
 
-                targetArrow.transform.position = new Vector3(aimPos.x, aimPos.y);
-                targetArrow.transform.rotation = Quaternion.Euler(0, 0, rad * Mathf.Rad2Deg);
+                arrowObject.transform.position = new Vector3(aimPos.x, aimPos.y);
+                arrowObject.transform.rotation = Quaternion.Euler(0, 0, rad * Mathf.Rad2Deg);
             }
 
             if (TouchInput.GetState() == TouchInput.State.Began)
             {
                 arrowOrbit.SetActive(true);
-                targetArrow.SetActive(true);
+                arrowObject.SetActive(true);
             }
             else if (TouchInput.GetState() == TouchInput.State.Ended)
             {
                 ArrowController.Appear(aimPos.x, aimPos.y, rad, force);
 
                 arrowOrbit.SetActive(false);
-                targetArrow.SetActive(false);
+                arrowObject.SetActive(false);
             }
         }
     }
