@@ -1,6 +1,4 @@
 ﻿using Assets.Generator;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace Assets.Controller
@@ -8,13 +6,13 @@ namespace Assets.Controller
     [DisallowMultipleComponent]
     public class ArrowController : MonoBehaviour
     {
-        public static ArrowGenerator parentGenerator { private get; set; }
+        public static ArrowGenerator ParentGenerator { private get; set; }
 
-        private Rigidbody2D rigid2d = null;
+        private Rigidbody2D rigid2d;
 
 
-        // Use this for initialization
-        private void Start()
+
+        private void Awake()
         {
             rigid2d = GetComponent<Rigidbody2D>();
         }
@@ -30,11 +28,12 @@ namespace Assets.Controller
             if (!gameObject.activeSelf) return;
 
             gameObject.SetActive(false);
-            parentGenerator.EraseArrow(gameObject);
+            ParentGenerator.EraseArrow(gameObject);
+
 
             if (!collision.gameObject.activeSelf) return;
 
-            parentGenerator.CreatePierceArrow(gameObject.transform, collision.gameObject.transform);
+            ParentGenerator.ActivePierceArrow(gameObject.transform, collision.gameObject.transform);
         }
     }
 }

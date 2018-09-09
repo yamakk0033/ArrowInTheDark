@@ -9,12 +9,12 @@ namespace Assets.Generator
     [DisallowMultipleComponent]
     public class EnemyGenerator : MonoBehaviour
     {
-        private StageData stageData = null;
-
         private Queue<GameObject> queue = new Queue<GameObject>();
         private Queue<GameObject> EraseQueue = new Queue<GameObject>();
 
-        private int enemysCount = 0;
+        private StageData stageData;
+        private int enemysCount;
+
 
 
         private void Awake()
@@ -22,25 +22,26 @@ namespace Assets.Generator
             stageData = Resources.Load<StageData>("StageData");
 
             this.InitEnemys(stageData.StatusList);
+        }
 
+        private void OnDestroy()
+        {
+            Resources.UnloadAsset(stageData);
+
+            while (queue.Count > 0) Destroy(queue.Dequeue());
+            while (EraseQueue.Count > 0) Destroy(EraseQueue.Dequeue());
+        }
+
+        private void Start()
+        {
             StartCoroutine(SpawnLoop());
         }
 
 
-        private IEnumerator SpawnLoop()
-        {
-            foreach (var status in stageData.StatusList)
-            {
-                yield return new WaitForSeconds(status.Interval);
-
-                this.Appear(status.SpawnVec.x, status.SpawnVec.y);
-            }
-        }
-
 
         private void InitEnemys(IReadOnlyCollection<EnemyStatusData> list)
         {
-            EnemyController.parentGenerator = this;
+            EnemyController.ParentGenerator = this;
 
             queue.Clear();
             foreach (var item in list)
@@ -62,6 +63,16 @@ namespace Assets.Generator
             enemysCount = queue.Count;
         }
 
+        private IEnumerator SpawnLoop()
+        {
+            foreach (var status in stageData.StatusList)
+            {
+                yield return new WaitForSeconds(status.Interval);
+
+                this.Appear(status.SpawnVec.x, status.SpawnVec.y);
+            }
+        }
+
         private void Appear(float x, float y)
         {
             if (queue.Count <= 0) return;
@@ -73,11 +84,12 @@ namespace Assets.Generator
             queue.Enqueue(item);
         }
 
+
+
         public void EraseEnemy(GameObject go)
         {
             EraseQueue.Enqueue(go);
         }
-
 
         public int GetEnemysCount()
         {

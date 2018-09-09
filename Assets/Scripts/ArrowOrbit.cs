@@ -5,55 +5,49 @@ using UnityEngine;
 namespace Assets
 {
     [DisallowMultipleComponent]
-    public class ArrowOrbit
+    public class ArrowOrbit : MonoBehaviour
     {
         private static readonly int MAX_COUNT = 100;
 
-        private GameObject parent = new GameObject();
+        [SerializeField] private GameObject origin;
+
         private List<GameObject> children = new List<GameObject>(MAX_COUNT);
 
 
-        public ArrowOrbit(GameObject orbitPrefab)
+
+        private void Awake()
         {
-            parent.transform.position = Vector3.zero;
-            parent.transform.rotation = Quaternion.identity;
-            parent.transform.localScale = Vector3.one;
-            parent.SetActive(false);
-
-
             children.Clear();
             foreach (int i in Enumerable.Range(0, MAX_COUNT))
             {
-                var go = Object.Instantiate(orbitPrefab);
-                go.transform.parent = parent.transform;
+                var go = Instantiate(origin);
+                go.transform.parent = gameObject.transform;
 
                 children.Add(go);
             }
         }
 
-        public void SetActive(bool isActive)
+        private void OnDestroy()
         {
-            parent.SetActive(isActive);
+            children.ForEach(c => Destroy(c));
+            children.Clear();
         }
 
-        public void Update(Vector2 gravity, Vector2 speed, Vector2 pos)
-        {
-            Vector2 prevPos = pos;
 
+
+        public void UpdatePos(Vector2 gravity, Vector2 speed, Vector2 pos)
+        {
             foreach (var item in children)
             {
                 // 現在の速度に重力加速度を足す
                 speed += gravity;
-
-                Vector2 nextPos = prevPos + (speed * Time.fixedDeltaTime);
+                pos += (speed * Time.fixedDeltaTime);
 
                 speed += gravity;
-                nextPos += (speed * Time.fixedDeltaTime);
+                pos += (speed * Time.fixedDeltaTime);
 
                 // 線のリストに加える
-                item.transform.position = nextPos;
-
-                prevPos = nextPos;
+                item.transform.position = pos;
             }
         }
     }

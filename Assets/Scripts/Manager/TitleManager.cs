@@ -6,12 +6,25 @@ namespace Assets.Manager
     [DisallowMultipleComponent]
     public class TitleManager : MonoBehaviour
     {
-        public void SceneReplace()
+        public enum eScreenMode
+        {
+            None,
+            Title,
+            StageSelect,
+        }
+
+
+        public void DoStart()
+        {
+
+        }
+
+        public void DoContinue()
         {
             SceneManager.LoadScene("GameScene");
         }
 
-        public void SceneEnd()
+        public void DoExit()
         {
             Application.Quit();
         }

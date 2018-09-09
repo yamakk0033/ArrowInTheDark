@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Assets.Manager
 {
@@ -11,97 +12,108 @@ namespace Assets.Manager
     {
         public enum eScreenMode
         {
+            None,
             Start,
             Game,
             Pause,
             Clear,
         }
 
-        [SerializeField] private GameObject arrowGeneratorPrefab = null;
-        [SerializeField] private GameObject enemyGeneratorPrefab = null;
-        [SerializeField] private Canvas startCanvasPrefab = null;
-        [SerializeField] private Canvas gameCanvasPrefab = null;
-        [SerializeField] private Canvas pauseCanvasPrefab = null;
-        [SerializeField] private Canvas clearCanvasPrefab = null;
+        [SerializeField] private GameObject arrowGeneratorPrefab;
+        [SerializeField] private GameObject enemyGeneratorPrefab;
+        [SerializeField] private Canvas startCanvas;
+        [SerializeField] private Canvas gameCanvas;
+        [SerializeField] private Canvas pauseCanvas;
+        [SerializeField] private Canvas clearCanvas;
 
-
-        private GameObject arrowGenerator = null;
-        private GameObject enemyGeneratorObject = null;
-        private Canvas startCanvas = null;
-        private Canvas gameCanvas = null;
-        private Canvas pauseCanvas = null;
-        private Canvas clearCanvas = null;
-
-        private EnemyGenerator enemyGenerator = null;
-
-        private eScreenMode screenMode = eScreenMode.Start;
-        private eScreenMode lastScreenMode = eScreenMode.Start;
-
+        private GameObject arrowGenerator;
+        private GameObject enemyGenerator;
+        private EnemyGenerator enemyGeneratorComponent;
         private bool isPause = false;
 
 
-        private void Start()
+        private eScreenMode _screenMode = eScreenMode.None;
+        private eScreenMode ScreenMode
+        {
+            get
+            {
+                return _screenMode;
+            }
+
+            set
+            {
+                if (_screenMode == value) return;
+
+                ChangeScreenMode(value);
+                _screenMode = value;
+            }
+        }
+
+
+
+        private void Awake()
         {
             arrowGenerator = Instantiate(arrowGeneratorPrefab);
-            enemyGeneratorObject = Instantiate(enemyGeneratorPrefab);
-            startCanvas = Instantiate(startCanvasPrefab);
-            gameCanvas  = Instantiate(gameCanvasPrefab);
-            pauseCanvas = Instantiate(pauseCanvasPrefab);
-            clearCanvas = Instantiate(clearCanvasPrefab);
+            enemyGenerator = Instantiate(enemyGeneratorPrefab);
 
-            enemyGenerator = enemyGeneratorObject.GetComponent<EnemyGenerator>();
+            enemyGeneratorComponent = enemyGenerator.GetComponent<EnemyGenerator>();
 
-            screenMode = eScreenMode.Start;
-            lastScreenMode = screenMode;
-            this.ChangeScreenMode(screenMode);
-
-            StartCoroutine(StartModeLoop());
+            StartCoroutine(GameLoop());
         }
 
-        private void Update()
+        private void OnDestroy()
         {
-            if (screenMode == lastScreenMode) return;
+            Destroy(arrowGenerator);
+            Destroy(enemyGenerator);
 
-            this.ChangeScreenMode(screenMode);
-            lastScreenMode = screenMode;
+            Destroy(startCanvas);
+            Destroy(gameCanvas);
+            Destroy(pauseCanvas);
+            Destroy(clearCanvas);
         }
 
 
-        private IEnumerator StartModeLoop()
+
+        private void NextWave()
         {
+            Destroy(enemyGenerator);
+
+            enemyGenerator = Instantiate(enemyGeneratorPrefab);
+            enemyGeneratorComponent = enemyGenerator.GetComponent<EnemyGenerator>();
+
+            StartCoroutine(GameLoop());
+        }
+
+        private IEnumerator GameLoop()
+        {
+            ScreenMode = eScreenMode.Start;
             yield return new WaitForSeconds(2.0f);
 
-            screenMode = eScreenMode.Game;
+            ScreenMode = eScreenMode.Game;
+            while (enemyGeneratorComponent.GetEnemysCount() > enemyGeneratorComponent.GetEraseEnemys()) yield return null;
 
-
-            while(enemyGenerator.GetEnemysCount() > enemyGenerator.GetEraseEnemys())
-            {
-                yield return null;
-            }
-
-            screenMode = eScreenMode.Clear;
+            ScreenMode = eScreenMode.Clear;
         }
 
-
-        private void ChangeScreenMode(eScreenMode sm)
+        private void ChangeScreenMode(eScreenMode mode)
         {
-            new Dictionary<eScreenMode, Canvas>()
+            new Dictionary<eScreenMode, GameObject>()
             {
-                { eScreenMode.Start, startCanvas },
-                { eScreenMode.Game,  gameCanvas },
-                { eScreenMode.Pause, pauseCanvas },
-                { eScreenMode.Clear, clearCanvas },
+                { eScreenMode.Start, startCanvas.gameObject },
+                { eScreenMode.Game, gameCanvas.gameObject },
+                { eScreenMode.Pause, pauseCanvas.gameObject },
+                { eScreenMode.Clear, clearCanvas.gameObject },
             }
-            .ToList().ForEach(pair => pair.Value.enabled = (pair.Key == sm));
+            .ToList().ForEach(pair => pair.Value.SetActive(pair.Key == mode));
 
 
-            switch (sm)
+            switch (mode)
             {
                 case eScreenMode.Start:
-                    if (enemyGeneratorObject.activeSelf) enemyGeneratorObject.SetActive(false);
+                    if (enemyGenerator.activeSelf) enemyGenerator.SetActive(false);
                     break;
                 case eScreenMode.Game:
-                    if (!enemyGeneratorObject.activeSelf) enemyGeneratorObject.SetActive(true);
+                    if (!enemyGenerator.activeSelf) enemyGenerator.SetActive(true);
                     break;
             }
         }
@@ -113,7 +125,17 @@ namespace Assets.Manager
             isPause = (!isPause);
             Time.timeScale = (isPause) ? 0.0f : 1.0f;
 
-            screenMode = (isPause) ? eScreenMode.Pause : eScreenMode.Game;
+            ScreenMode = (isPause) ? eScreenMode.Pause : eScreenMode.Game;
+        }
+
+        public void DoTitleScene()
+        {
+            SceneManager.LoadScene("TitleScene");
+        }
+
+        public void DoNextWave()
+        {
+            NextWave();
         }
     }
 }

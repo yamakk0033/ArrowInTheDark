@@ -9,17 +9,16 @@ namespace Assets.Controller
     [DisallowMultipleComponent]
     public class EnemyController : MonoBehaviour
     {
-        public static EnemyGenerator parentGenerator { private get; set; }
+        public static EnemyGenerator ParentGenerator { private get; set; }
 
         public EnemyStatusData Status { private get; set; }
 
+        private SpriteRenderer spriteRend;
+        private Rigidbody2D rigid2d;
 
-        private SpriteRenderer spriteRend = null;
-        private Rigidbody2D rigid2d = null;
 
 
-        // Use this for initialization
-        private void Start()
+        private void Awake()
         {
             spriteRend = GetComponent<SpriteRenderer>();
             rigid2d = GetComponent<Rigidbody2D>();
@@ -33,22 +32,19 @@ namespace Assets.Controller
         private void OnCollisionEnter2D(Collision2D collision)
         {
             Status.Hp --;
-            spriteRend.color = (Status.Hp == 1) ? Color.red : Color.white;
+            if (Status.Hp > 0) return;
 
-            if (Status.Hp <= 0)
+
+            gameObject.SetActive(false);
+
+            foreach (var arrow in Enumerable.Range(0, gameObject.transform.childCount).Select(i => gameObject.transform.GetChild(i)))
             {
-                gameObject.SetActive(false);
-
-                var attachedArrows = Enumerable.Range(0, gameObject.transform.childCount).Select(i => gameObject.transform.GetChild(i)).ToArray();
-                foreach (var arrow in attachedArrows)
-                {
-                    if (arrow.gameObject.tag != TagName.ARROW) continue;
-                    arrow.gameObject.SetActive(false);
-                    arrow.parent = null;
-                }
-
-                parentGenerator.EraseEnemy(gameObject);
+                if (arrow.gameObject.tag != TagName.ARROW) continue;
+                arrow.gameObject.SetActive(false);
+                arrow.parent = null;
             }
+
+            ParentGenerator.EraseEnemy(gameObject);
         }
     }
 }
