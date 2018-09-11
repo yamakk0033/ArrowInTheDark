@@ -3,6 +3,7 @@ using Assets.Generator;
 using Assets.ScriptableObj;
 using System.Linq;
 using UnityEngine;
+using DG.Tweening;
 
 namespace Assets.Controller
 {
@@ -13,20 +14,11 @@ namespace Assets.Controller
 
         public EnemyStatusData Status { private get; set; }
 
-        private SpriteRenderer spriteRend;
-        private Rigidbody2D rigid2d;
 
 
-
-        private void Awake()
+        private void Start()
         {
-            spriteRend = GetComponent<SpriteRenderer>();
-            rigid2d = GetComponent<Rigidbody2D>();
-        }
-
-        private void FixedUpdate()
-        {
-            rigid2d.velocity = Vector2.left * 30.0f * Time.fixedDeltaTime;
+            transform.DOMove(Status.MoveStopPos, Status.MoveDuration);
         }
 
         private void OnCollisionEnter2D(Collision2D collision)

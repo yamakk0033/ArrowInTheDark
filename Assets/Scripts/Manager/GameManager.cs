@@ -1,4 +1,5 @@
-﻿using Assets.Generator;
+﻿using Assets.Constants;
+using Assets.Generator;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -130,7 +131,7 @@ namespace Assets.Manager
 
         public void DoTitleScene()
         {
-            SceneManager.LoadScene("TitleScene");
+            SceneManager.LoadScene(SceneName.TITLE_SCENE);
         }
 
         public void DoNextWave()

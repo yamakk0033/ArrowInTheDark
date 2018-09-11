@@ -19,7 +19,7 @@ namespace Assets.Generator
 
         private void Awake()
         {
-            stageData = Resources.Load<StageData>("StageData");
+            stageData = Resources.Load<StageData>(StageSelectData.StageDataName);
 
             this.InitEnemys(stageData.StatusList);
         }
@@ -69,7 +69,7 @@ namespace Assets.Generator
             {
                 yield return new WaitForSeconds(status.Interval);
 
-                this.Appear(status.SpawnVec.x, status.SpawnVec.y);
+                this.Appear(status.SpawnPos.x, status.SpawnPos.y);
             }
         }
 

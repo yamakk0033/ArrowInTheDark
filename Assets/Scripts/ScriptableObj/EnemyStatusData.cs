@@ -8,26 +8,31 @@ namespace Assets.ScriptableObj
         [SerializeField] private GameObject _prefab = null;
         [SerializeField] private string _name = "";
         [SerializeField] private int _hp = 0;
-        [SerializeField] private int _strength = 0;
-        [SerializeField] private float _speed = 0.0f;
-        [SerializeField] private Vector2 _spawnVec = Vector2.zero;
+        [SerializeField] private int _attack = 0;
+        [SerializeField] private Vector2 _spawnPos = Vector2.zero;
+        [SerializeField] private Vector2 _moveStopPos = Vector2.zero;
+        [SerializeField] private float _moveDuration = 0.0f;
         [SerializeField] private float _interval = 0.0f;
 
-        public GameObject Prefab { get { return _prefab;   } }
-        public string Name       { get { return _name;     } set { _name     = value; } }
-        public int Hp            { get { return _hp;       } set { _hp       = value; } }
-        public int Strength      { get { return _strength; } set { _strength = value; } }
-        public float Speed       { get { return _speed;    } set { _speed    = value; } }
-        public Vector2 SpawnVec  { get { return _spawnVec; } set { _spawnVec = value; } }
-        public float Interval    { get { return _interval; } set { _interval = value; } }
+
+        public GameObject Prefab   { get { return _prefab;       } }
+        public string Name         { get { return _name;         } set { _name         = value; } }
+        public int Hp              { get { return _hp;           } set { _hp           = value; } }
+        public int Attack          { get { return _attack;       } set { _attack       = value; } }
+        public Vector2 SpawnPos    { get { return _spawnPos;     } set { _spawnPos     = value; } }
+        public Vector2 MoveStopPos { get { return _moveStopPos;  } set { _moveStopPos  = value; } }
+        public float MoveDuration  { get { return _moveDuration; } set { _moveDuration = value; } }
+        public float Interval      { get { return _interval;     } set { _interval     = value; } }
+
 
         public void Set(EnemyStatusData status)
         {
             Name = status.Name;
             Hp = status.Hp;
-            Strength = status.Strength;
-            Speed = status.Speed;
-            SpawnVec = status.SpawnVec;
+            Attack = status.Attack;
+            SpawnPos = status.SpawnPos;
+            MoveStopPos = status.MoveStopPos;
+            MoveDuration = status.MoveDuration;
             Interval = status.Interval;
         }
     }

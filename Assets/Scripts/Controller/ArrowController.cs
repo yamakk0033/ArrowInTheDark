@@ -19,6 +19,14 @@ namespace Assets.Controller
 
         private void FixedUpdate()
         {
+            var pos = transform.position;
+
+            if (pos.x < -Screen.width * 2 || Screen.width * 2 < pos.x ||
+                pos.y < -Screen.height * 2 || Screen.height * 2 < pos.y)
+            {
+                Erase();
+            }
+
             float rad = Mathf.Atan2(rigid2d.velocity.y, rigid2d.velocity.x);
             transform.rotation = Quaternion.Euler(0, 0, rad * Mathf.Rad2Deg);
         }
@@ -27,13 +35,20 @@ namespace Assets.Controller
         {
             if (!gameObject.activeSelf) return;
 
-            gameObject.SetActive(false);
-            ParentGenerator.EraseArrow(gameObject);
+            Erase();
 
 
             if (!collision.gameObject.activeSelf) return;
 
             ParentGenerator.ActivePierceArrow(gameObject.transform, collision.gameObject.transform);
+        }
+
+
+
+        private void Erase()
+        {
+            gameObject.SetActive(false);
+            ParentGenerator.EraseArrow(gameObject);
         }
     }
 }

@@ -14,7 +14,8 @@ MonoBehaviour:
   _prefab: {fileID: 1461882803072660, guid: 6f1217685a783b443b310b9409f88443, type: 2}
   _name: testetst
   _hp: 2
-  _strength: 5
-  _speed: 1
-  _spawnVec: {x: 0, y: 0}
-  _interval: 2.5
+  _attack: 1
+  _spawnPos: {x: 5, y: 0}
+  _moveStopPos: {x: -3, y: 0}
+  _moveDuration: 5
+  _interval: 1.5

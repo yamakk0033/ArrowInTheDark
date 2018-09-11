@@ -51,10 +51,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e7f4092d53f5db47b792459d508b5f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  orbitPrefab: {fileID: 1169677344705658, guid: 8491a1cb225aae240b9ab41e995ae0ae,
+  bowPrefab: {fileID: 1832759767145024, guid: be22c578ca56f0248b32bb33585fe421, type: 2}
+  stickPrefab: {fileID: 1683169939903994, guid: 8cdd6baa861302e48bcf53d3f0c347f1,
     type: 2}
   arrowPrefab: {fileID: 1011527040292678, guid: b3f562e33d85a074cb11a5468ecd4166,
     type: 2}
-  stickPrefab: {fileID: 1683169939903994, guid: 8cdd6baa861302e48bcf53d3f0c347f1,
+  orbitPrefab: {fileID: 1169677344705658, guid: 8491a1cb225aae240b9ab41e995ae0ae,
     type: 2}
-  bowPrefab: {fileID: 1832759767145024, guid: be22c578ca56f0248b32bb33585fe421, type: 2}
