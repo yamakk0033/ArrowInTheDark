@@ -7,9 +7,9 @@ namespace Assets
     [DisallowMultipleComponent]
     public class ArrowOrbit : MonoBehaviour
     {
-        private static readonly int MAX_COUNT = 100;
+        [SerializeField] private GameObject origin = null;
 
-        [SerializeField] private GameObject origin;
+        private static readonly int MAX_COUNT = 100;
 
         private List<GameObject> children = new List<GameObject>(MAX_COUNT);
 

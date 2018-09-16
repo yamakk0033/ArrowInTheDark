@@ -12,10 +12,12 @@ MonoBehaviour:
   m_Name: EnemyStatusData
   m_EditorClassIdentifier: 
   _prefab: {fileID: 1461882803072660, guid: 6f1217685a783b443b310b9409f88443, type: 2}
-  _name: testetst
-  _hp: 2
+  _characterName: "\u307E\u308B\u3044\u3084\u3064"
+  _hp: 4
   _attack: 1
-  _spawnPos: {x: 5, y: 0}
-  _moveStopPos: {x: -3, y: 0}
-  _moveDuration: 5
-  _interval: 1.5
+  _spawnPosY: 0
+  _moveStopPos: {x: 0, y: 0}
+  _moveDuration: 1
+  _attackTime: 1
+  _attackInterval: 1
+  _spawnInterval: 1.5

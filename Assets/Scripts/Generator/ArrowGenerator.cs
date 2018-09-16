@@ -12,10 +12,10 @@ namespace Assets.Generator
         private static readonly int MAX_COUNT = 20;
         private static readonly int MAX_ATTACHED_COUNT = 50;
 
-        [SerializeField] private GameObject bowPrefab;
-        [SerializeField] private GameObject stickPrefab;
-        [SerializeField] private GameObject arrowPrefab;
-        [SerializeField] private GameObject orbitPrefab;
+        [SerializeField] private GameObject bowPrefab = null;
+        [SerializeField] private GameObject stickPrefab = null;
+        [SerializeField] private GameObject arrowPrefab = null;
+        [SerializeField] private GameObject orbitPrefab = null;
 
         private Queue<GameObject> queue = new Queue<GameObject>(MAX_COUNT);
         private Queue<GameObject> attachedQueue = new Queue<GameObject>(MAX_ATTACHED_COUNT);

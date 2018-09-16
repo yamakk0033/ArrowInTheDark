@@ -1,4 +1,5 @@
-﻿using Assets.Controller;
+﻿using Assets.Constants;
+using Assets.Controller;
 using Assets.ScriptableObj;
 using System.Collections;
 using System.Collections.Generic;
@@ -43,6 +44,10 @@ namespace Assets.Generator
         {
             EnemyController.ParentGenerator = this;
 
+            var gos = GameObject.FindGameObjectsWithTag(TagName.PROTECTED_OBJECT);
+
+            EnemyController.ProtectController = gos[0].GetComponent<ProtectedObjectController>();
+
             queue.Clear();
             foreach (var item in list)
             {
@@ -67,9 +72,9 @@ namespace Assets.Generator
         {
             foreach (var status in stageData.StatusList)
             {
-                yield return new WaitForSeconds(status.Interval);
+                yield return new WaitForSeconds(status.SpawnInterval);
 
-                this.Appear(status.SpawnPos.x, status.SpawnPos.y);
+                this.Appear(7.0f, status.SpawnPosY);
             }
         }
 

@@ -17,9 +17,9 @@ namespace Assets.Manager
             StageSelect,
         }
 
-        [SerializeField] private Canvas titleCanvas;
-        [SerializeField] private Canvas stageSelectCanvas;
-        [SerializeField] private Text stageSelectText;
+        [SerializeField] private Canvas titleCanvas = null;
+        [SerializeField] private Canvas stageSelectCanvas = null;
+        [SerializeField] private Text stageSelectText = null;
 
 
         private int stageNumber;

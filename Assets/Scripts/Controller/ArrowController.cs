@@ -1,4 +1,5 @@
 ﻿using Assets.Generator;
+using Assets.ScriptableObj;
 using UnityEngine;
 
 namespace Assets.Controller
@@ -6,7 +7,10 @@ namespace Assets.Controller
     [DisallowMultipleComponent]
     public class ArrowController : MonoBehaviour
     {
+        [SerializeField] private StatusBaseData status = null;
+
         public static ArrowGenerator ParentGenerator { private get; set; }
+
 
         private Rigidbody2D rigid2d;
 
@@ -21,8 +25,8 @@ namespace Assets.Controller
         {
             var pos = transform.position;
 
-            if (pos.x < -Screen.width * 2 || Screen.width * 2 < pos.x ||
-                pos.y < -Screen.height * 2 || Screen.height * 2 < pos.y)
+            if (pos.x < -Screen.width || Screen.width < pos.x ||
+                pos.y < -Screen.height || Screen.height < pos.y)
             {
                 Erase();
             }
@@ -49,6 +53,13 @@ namespace Assets.Controller
         {
             gameObject.SetActive(false);
             ParentGenerator.EraseArrow(gameObject);
+        }
+
+
+
+        public int GetAttack()
+        {
+            return status.Attack;
         }
     }
 }

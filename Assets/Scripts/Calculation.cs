@@ -6,8 +6,7 @@ namespace Assets
     {
         public static float Distance(Vector3 vec1, Vector3 vec2)
         {
-            var v = vec2 - vec1;
-            return Mathf.Sqrt(v.x * v.x + v.y * v.y);
+            return (vec2 - vec1).sqrMagnitude;
         }
 
         public static float Radian(Vector3 vec1, Vector3 vec2)

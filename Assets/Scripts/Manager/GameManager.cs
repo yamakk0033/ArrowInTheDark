@@ -1,4 +1,5 @@
 ﻿using Assets.Constants;
+using Assets.Controller;
 using Assets.Generator;
 using System.Collections;
 using System.Collections.Generic;
@@ -18,16 +19,23 @@ namespace Assets.Manager
             Game,
             Pause,
             Clear,
+            GameOver,
         }
 
-        [SerializeField] private GameObject arrowGeneratorPrefab;
-        [SerializeField] private GameObject enemyGeneratorPrefab;
-        [SerializeField] private Canvas startCanvas;
-        [SerializeField] private Canvas gameCanvas;
-        [SerializeField] private Canvas pauseCanvas;
-        [SerializeField] private Canvas clearCanvas;
+
+        [SerializeField] private GameObject arrowGeneratorPrefab = null;
+        [SerializeField] private GameObject enemyGeneratorPrefab = null;
+        [SerializeField] private GameObject protectedObjectPrefab = null;
+        [SerializeField] private Canvas startCanvas = null;
+        [SerializeField] private Canvas gameCanvas = null;
+        [SerializeField] private Canvas pauseCanvas = null;
+        [SerializeField] private Canvas clearCanvas = null;
+        [SerializeField] private Canvas gameOverCanvas = null;
+
 
         private GameObject arrowGenerator;
+        private ProtectedObjectController protectedObject;
+
         private GameObject enemyGenerator;
         private EnemyGenerator enemyGeneratorComponent;
         private bool isPause = false;
@@ -55,8 +63,9 @@ namespace Assets.Manager
         private void Awake()
         {
             arrowGenerator = Instantiate(arrowGeneratorPrefab);
-            enemyGenerator = Instantiate(enemyGeneratorPrefab);
+            protectedObject = Instantiate(protectedObjectPrefab).GetComponent<ProtectedObjectController>();
 
+            enemyGenerator = Instantiate(enemyGeneratorPrefab);
             enemyGeneratorComponent = enemyGenerator.GetComponent<EnemyGenerator>();
 
             StartCoroutine(GameLoop());
@@ -65,19 +74,20 @@ namespace Assets.Manager
         private void OnDestroy()
         {
             Destroy(arrowGenerator);
-            Destroy(enemyGenerator);
+            if(protectedObject != null) Destroy(protectedObject.gameObject);
 
-            Destroy(startCanvas);
-            Destroy(gameCanvas);
-            Destroy(pauseCanvas);
-            Destroy(clearCanvas);
+            Destroy(enemyGenerator);
         }
 
 
 
-        private void NextWave()
+        private void ChangeStage()
         {
+            protectedObject.gameObject.SetActive(false);
+            Destroy(protectedObject.gameObject);
             Destroy(enemyGenerator);
+
+            protectedObject = Instantiate(protectedObjectPrefab).GetComponent<ProtectedObjectController>();
 
             enemyGenerator = Instantiate(enemyGeneratorPrefab);
             enemyGeneratorComponent = enemyGenerator.GetComponent<EnemyGenerator>();
@@ -91,9 +101,21 @@ namespace Assets.Manager
             yield return new WaitForSeconds(2.0f);
 
             ScreenMode = eScreenMode.Game;
-            while (enemyGeneratorComponent.GetEnemysCount() > enemyGeneratorComponent.GetEraseEnemys()) yield return null;
+            while (true)
+            {
+                if(enemyGeneratorComponent.GetEnemysCount() <= enemyGeneratorComponent.GetEraseEnemys())
+                {
+                    ScreenMode = eScreenMode.Clear;
+                    break;
+                }
+                else if(protectedObject.GetHp() <= 0)
+                {
+                    ScreenMode = eScreenMode.GameOver;
+                    break;
+                }
 
-            ScreenMode = eScreenMode.Clear;
+                yield return null;
+            }
         }
 
         private void ChangeScreenMode(eScreenMode mode)
@@ -104,6 +126,7 @@ namespace Assets.Manager
                 { eScreenMode.Game, gameCanvas.gameObject },
                 { eScreenMode.Pause, pauseCanvas.gameObject },
                 { eScreenMode.Clear, clearCanvas.gameObject },
+                { eScreenMode.GameOver, gameOverCanvas.gameObject },
             }
             .ToList().ForEach(pair => pair.Value.SetActive(pair.Key == mode));
 
@@ -134,9 +157,15 @@ namespace Assets.Manager
             SceneManager.LoadScene(SceneName.TITLE_SCENE);
         }
 
-        public void DoNextWave()
+        public void DoNextStage()
         {
-            NextWave();
+            //StageSelectData.Number ++;
+            ChangeStage();
+        }
+
+        public void DoRetryStage()
+        {
+            ChangeStage();
         }
     }
 }
