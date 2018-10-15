@@ -1,9 +1,7 @@
-﻿using Assets.Constants;
-using Assets.Generator;
+﻿using Assets.Generator;
 using Assets.ScriptableObj;
 using DG.Tweening;
 using System.Collections;
-using System.Linq;
 using UnityEngine;
 
 namespace Assets.Controller
@@ -13,7 +11,6 @@ namespace Assets.Controller
     {
         public static EnemyGenerator ParentGenerator { private get; set; }
         public static ProtectedObjectController ProtectController { private get; set; }
-
 
         public EnemyStatusData Status { private get; set; }
 
@@ -26,18 +23,18 @@ namespace Assets.Controller
             rend = GetComponent<SpriteRenderer>();
         }
 
-
         private void Start()
         {
             transform
                 .DOMove(Status.MoveStopPos, Status.MoveDuration)
                 .SetEase(Ease.Linear)
-                .OnComplete(() => StartCoroutine(AttackLoop()));
+                .OnComplete(() => StartCoroutine(AttackLoop()))
+                ;
         }
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
-            Status.Hp -= collision.gameObject.GetComponent<ArrowController>().GetAttack();
+            Status.Hp -= collision.gameObject.GetComponent<BaseAmmoController>().GetAttack();
 
             rend.color = new Color(1.0f
                 , (Status.Hp <= 0) ? 0 : ((float)Status.Hp / (float)Status.MaxHp)
@@ -46,16 +43,7 @@ namespace Assets.Controller
 
             if (Status.Hp > 0) return;
 
-
             gameObject.SetActive(false);
-
-            foreach (var arrow in Enumerable.Range(0, gameObject.transform.childCount).Select(i => gameObject.transform.GetChild(i)))
-            {
-                if (arrow.gameObject.tag != TagName.ARROW) continue;
-                arrow.gameObject.SetActive(false);
-                arrow.parent = null;
-            }
-
             ParentGenerator.EraseEnemy(gameObject);
         }
 

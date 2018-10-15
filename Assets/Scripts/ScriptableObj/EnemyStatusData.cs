@@ -3,7 +3,7 @@
 namespace Assets.ScriptableObj
 {
     [CreateAssetMenu]
-    public class EnemyStatusData : StatusBaseData
+    public class EnemyStatusData : BaseStatusData
     {
         [SerializeField] private float _spawnPosY = 0.0f;
         [SerializeField] private Vector2 _moveStopPos = Vector2.zero;

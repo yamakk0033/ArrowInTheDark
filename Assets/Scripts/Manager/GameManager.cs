@@ -23,7 +23,6 @@ namespace Assets.Manager
         }
 
 
-        [SerializeField] private GameObject arrowGeneratorPrefab = null;
         [SerializeField] private GameObject enemyGeneratorPrefab = null;
         [SerializeField] private GameObject protectedObjectPrefab = null;
         [SerializeField] private Canvas startCanvas = null;
@@ -33,7 +32,6 @@ namespace Assets.Manager
         [SerializeField] private Canvas gameOverCanvas = null;
 
 
-        private GameObject arrowGenerator;
         private ProtectedObjectController protectedObject;
 
         private GameObject enemyGenerator;
@@ -62,7 +60,6 @@ namespace Assets.Manager
 
         private void Awake()
         {
-            arrowGenerator = Instantiate(arrowGeneratorPrefab);
             protectedObject = Instantiate(protectedObjectPrefab).GetComponent<ProtectedObjectController>();
 
             enemyGenerator = Instantiate(enemyGeneratorPrefab);
@@ -73,7 +70,6 @@ namespace Assets.Manager
 
         private void OnDestroy()
         {
-            Destroy(arrowGenerator);
             if(protectedObject != null) Destroy(protectedObject.gameObject);
 
             Destroy(enemyGenerator);

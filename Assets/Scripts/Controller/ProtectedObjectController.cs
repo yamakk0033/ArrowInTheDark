@@ -6,22 +6,20 @@ namespace Assets.Controller
     [DisallowMultipleComponent]
     public class ProtectedObjectController : MonoBehaviour
     {
-        [SerializeField] private StatusBaseData statusPrefab = null;
+        [SerializeField] private BaseStatusData statusPrefab = null;
 
-
-        private StatusBaseData status;
-
-
+        private BaseStatusData status;
         private SpriteRenderer rend;
 
 
         private void Awake()
         {
-            status = ScriptableObject.CreateInstance<StatusBaseData>();
+            status = ScriptableObject.CreateInstance<BaseStatusData>();
             status.Set(statusPrefab);
 
             rend = GetComponent<SpriteRenderer>();
         }
+
 
 
         public void Damage(int attack)
