@@ -1,5 +1,6 @@
 ﻿using Assets.Constants;
 using Assets.Controller;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -14,7 +15,7 @@ namespace Assets.Generator
 
         [SerializeField] private GameObject ammoPrefab = null;
 
-        private Queue<GameObject> ammoQueue = new Queue<GameObject>(MAX_COUNT);
+        private Queue<Tuple<GameObject, Rigidbody2D>> ammoQueue = new Queue<Tuple<GameObject, Rigidbody2D>>(MAX_COUNT);
 
 
 
@@ -28,30 +29,32 @@ namespace Assets.Generator
                 var go = Instantiate(ammoPrefab);
                 go.SetActive(false);
 
-                ammoQueue.Enqueue(go);
+                var rb = go.GetComponent<Rigidbody2D>();
+
+                ammoQueue.Enqueue(Tuple.Create(go, rb));
             }
         }
 
         private void OnDestroy()
         {
-            while (ammoQueue.Count > 0) Destroy(ammoQueue.Dequeue());
+            while (ammoQueue.Count > 0) Destroy(ammoQueue.Dequeue().Item1);
         }
 
 
 
         public void Appear(float x, float y, float rad, Vector2 force)
         {
-            var item = ammoQueue.Dequeue();
-            item.transform.position = new Vector3(x, y);
-            item.transform.rotation = Quaternion.Euler(0, 0, rad * Mathf.Rad2Deg);
+            var tpl = ammoQueue.Dequeue();
+            tpl.Item1.transform.position = new Vector3(x, y);
+            tpl.Item1.transform.rotation = Quaternion.Euler(0, 0, rad * Mathf.Rad2Deg);
 
-            item.SetActive(true);
-            item.GetComponent<Rigidbody2D>().AddForce(force, ForceMode2D.Impulse);
+            tpl.Item1.SetActive(true);
+            tpl.Item2.AddForce(force, ForceMode2D.Impulse);
         }
 
-        public void EraseWeapon(GameObject go)
+        public void EraseWeapon(GameObject go, Rigidbody2D rb)
         {
-            ammoQueue.Enqueue(go);
+            ammoQueue.Enqueue(Tuple.Create(go, rb));
         }
     }
 }

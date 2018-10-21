@@ -11,11 +11,18 @@ namespace Assets.Controller
 
         [SerializeField] protected BaseStatusData status = null;
 
+        private Vector3 pos;
+        private Rigidbody2D rb2d;
+
+
+        private void Start()
+        {
+            pos = transform.position;
+            rb2d = GetComponent<Rigidbody2D>();
+        }
 
         private void Update()
         {
-            var pos = transform.position;
-
             if (pos.x < -Screen.width  || Screen.width  < pos.x ||
                 pos.y < -Screen.height || Screen.height < pos.y)
             {
@@ -34,7 +41,7 @@ namespace Assets.Controller
         private void Erase()
         {
             gameObject.SetActive(false);
-            ParentGenerator.EraseWeapon(gameObject);
+            ParentGenerator.EraseWeapon(gameObject, rb2d);
         }
 
 
